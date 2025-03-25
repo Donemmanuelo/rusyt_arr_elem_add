@@ -1,0 +1,42 @@
+name: publish on ghcr.io
+on:
+  push:
+    branches:
+    - main
+env:
+  REPOSITORY: donemmanuelo    
+jobs:
+    build: 
+      runs-on: ubuntu-22.04
+      permissions:
+        packages: write
+      
+
+      steps:
+      # checkout the repository code
+        - name: checkout code 
+          uses: actions/checkout@v3
+
+        - name: Login to Container Registry
+          uses: docker/login-action@v2
+          with:  
+            registry: ghcr.io 
+            username: ${{ github.actor}}
+            password: ${{ secrets.GITHUB_TOKEN}}
+            
+        - name: Build Docker image
+          run: |
+             docker build -t ghcr.io/${{ REPOSITORY }}/area-image:latest .
+
+        - name: Slim Docker image
+          uses: kitabisa/docker-slim-action@v1
+          env:
+            DSLIM_HTTP_PROBE: "false"  # Disables HTTP probing during slimming
+          with:
+            target: ghcr.io/${{ REPOSITORY }}/area-image:latest  # Target image to slim
+            tag: slim  # Suffix for the slimmed image tag
+
+        - name: Push slimmed Docker image
+          run: |
+            docker push ghcr.io/${{ REPOSITORY }}/area-image:slim
+          
