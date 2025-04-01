@@ -6,7 +6,7 @@ COPY . .
 
 RUN cargo build --release 
 
-FROM debian:alpine 
+FROM debian:latest
 
 RUN apt-get update  && apt-get install -y libssl-dev
 
