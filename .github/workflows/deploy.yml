@@ -25,7 +25,8 @@ jobs:
             
         - name: Build Docker image
           run: |
-             docker build -t ghcr.io/${{ vars.REPOSITORY }}/area-image:latest .
+             docker build -t ghcr.io/${{ vars.REPOSITORY }}/area-image:latest \
+             .
 
         - name: Slim Docker image
           uses: kitabisa/docker-slim-action@v1
